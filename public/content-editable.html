@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  #info{
+    border: 3px solid gray;
+    width: 70%;
+    height: 300px;
+  }
+
+  #info.lightblue{
+    border: 3px solid lightblue;
+    width: 70%;
+    height: 300px;
+    background-color: antiquewhite;
+  }
+</style>
+<body>
+  <div id="info" contenteditable="true" onfocus="event.target.classList.add('lightblue')"
+  onblur="event.target.classList.remove('lightblue')"
+  oninput="saveData(event.target.innerText)"></div>
+
+<!-- 標籤屬性為input才能使用onchange和console.log(event.target.value) -->
+<script>
+  const info = document.querySelector('#info');
+
+  function saveData(data) {
+    localStorage.setItem('my-content', data);
+  }
+
+  info.innerText = localStorage.getItem('my-content') || '';
+
+</script>
+</body>
+</html>
