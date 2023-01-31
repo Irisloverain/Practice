@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+   .mysvg {
+        width: 600px;
+        height: 600px;
+      }
+      .mypath1 {
+        fill: blue;
+        stroke: lightblue;
+      }
+      .mypath2 {
+        fill: pink;
+        stroke: lightblue;
+        transform: scale(0);
+      }
+      .mypath2.animation {
+      animation: animateScale .5s ease 1;
+      animation-fill-mode: forwards;
+}
+</style>
+<body>
+  <div class="mysvg">
+    <?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 27.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+    <svg version="1.1" baseProfile="basic" id="圖層_1"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 171.45 147.5"
+	 xml:space="preserve">
+    <path class="mypath1" d="M65.87,54.2l4.81,9.75c2.15,4.36,6.31,7.38,11.13,8.08l10.76,1.56c12.12,1.76,16.96,16.66,8.19,25.2l-7.79,7.59
+	c-3.48,3.39-5.07,8.29-4.25,13.08l1.84,10.72c2.07,12.07-10.6,21.28-21.44,15.58l-9.63-5.06c-4.3-2.26-9.45-2.26-13.75,0l-9.63,5.06
+	c-10.84,5.7-23.51-3.51-21.44-15.58l1.84-10.72c0.82-4.79-0.77-9.68-4.25-13.08l-7.79-7.59c-8.77-8.55-3.93-23.44,8.19-25.2
+	l10.76-1.56c4.81-0.7,8.97-3.72,11.13-8.08l4.81-9.75C44.79,43.22,60.45,43.22,65.87,54.2z"/>
+    <path class="mypath2" d="M137.89,2.63l5.14,4.85c2.3,2.17,5.52,3.07,8.61,2.41l6.91-1.48c7.78-1.67,14.1,6.31,10.69,13.5l-3.03,6.39
+	c-1.35,2.86-1.22,6.2,0.37,8.93l3.55,6.12c3.99,6.89-1.64,15.36-9.54,14.34l-7.01-0.91c-3.14-0.4-6.27,0.76-8.38,3.11l-4.72,5.26
+	c-5.32,5.93-15.12,3.18-16.59-4.64l-1.31-6.95c-0.58-3.11-2.66-5.73-5.55-7.01l-6.46-2.86c-7.28-3.22-7.7-13.4-0.71-17.21l6.2-3.39
+	c2.77-1.52,4.63-4.3,4.95-7.44l0.73-7.03C122.56,0.71,132.1-2.83,137.89,2.63z"/>
+</svg>
+  </div>
+</body>
+<script>
+  const mypath1 = document.querySelector(".mypath1");
+  mypath1.onclick = function(event){
+    if (mypath1.classList.contains("mypath1")) {
+          mypath1.classList.remove("mypath1");
+        } else {
+          mypath1.classList.add("mypath1");
+        }
+  };
+  const mypath2 = document.querySelector(".mypath2");
+  mypath2.onclick = function(event){
+    if (mypath2.classList.contains("mypath2")) {
+          mypath2.classList.remove("mypath2");
+        } else {
+          mypath2.classList.add("mypath2");
+        }
+  };
+</script>
+</html>

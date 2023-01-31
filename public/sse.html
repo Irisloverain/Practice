@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id ="info"></div>
+  <script>
+     const info = document.querySelector("#info");
+      const es = new EventSource("/try-sse");
+      es.addEventListener("open", (event) => {
+        info.style.backgroundColor = 'orange';
+        console.log('open:', event);
+      });
+      es.addEventListener("message", (event) => {
+        info.innerHTML = `<b>${event.lastEventId}</b> <span>${event.data}</span>`;
+      });
+      es.addEventListener("error", (event) => {
+        console.log('error:', event);
+      });
+  </script>
+</body>
+</html>

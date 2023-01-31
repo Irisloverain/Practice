@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      canvas {
+        border: 1px dashed green;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="600" height="400"></canvas><br>
+    <label for="myColor">myColor</label>
+    <input type="color" name="myColor" id="myColor"><br>
+
+    <label for="myNumber">myNumber</label>
+    <input type="number" name="myNumber" id="myNumber"><br>
+
+    <button onclick="ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);">清除</button>
+    <button onclick="savePic()">儲存</button>
+
+    <script>
+      const myCanvas = document.getElementById("myCanvas");
+      const ctx = myCanvas.getContext("2d");
+      let color = document.getElementById("myColor");
+      let lineWidth = document.getElementById("myNumber");
+
+      
+      color.addEventListener('input', function(e) {
+      ctx.strokeStyle = `${this.value}`;
+      console.log(this.value);})
+
+
+      lineWidth.addEventListener('input', function(e) {
+      ctx.lineWidth = this.value;
+      console.log(this.value);})
+
+  
+
+      //儲存滑鼠點擊移動結束的位置
+      let bX =0;
+      let bY =0;
+
+  
+      const mDown = (e) => {
+        //重製起始點
+        ctx.beginPath();
+        myCanvas.addEventListener('mousemove', mMove);
+
+      };
+      const mUp = (e) => {
+        myCanvas.removeEventListener('mousemove', mMove);
+      };
+      const mMove = (e) => {
+        // ctx.beginPath();
+        // ctx.moveTo(bX,bY);
+        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.stroke();
+        // bX = e.offsetX;
+        // bY = e.offsetY;
+      };
+
+      myCanvas.addEventListener('mousedown', mDown);
+      window.addEventListener('mouseup', mUp);
+
+      function savePic(){
+        const imgData = myCanvas.toDataURL('image/jpeg', 0.5).replace("image/jpeg", "image/octet-stream");
+        //把imgeDataURL存到一個假結點上下載
+        const a = document.createElement('a');
+        a.setAttribute('download', 'draw.png');
+        a.setAttribute('href', imgData);
+        a.click();
+      }
+
+    </script>
+  </body>
+</html>

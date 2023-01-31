@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  .box{
+    position: relative;
+    display: inline-block;
+    border: 3px solid lightblue;
+    padding: 30px;
+    width: 10px;
+    height: 10px;
+    background-color: aquamarine;
+  }
+  .rect1{
+    position: absolute;
+    left: 0;
+    width: 250px;
+    height: 250px;
+    background-color: pink;
+  }
+
+  .rect2{
+    position: absolute;
+    left: 300px;
+    width: 250px;
+    height: 250px;
+    background-color: lightgoldenrodyellow;
+  }
+</style>
+<body>
+  <div class="rect1">
+    <div class="box" id="box1" draggable="true"></div>
+    <div class="box" id="box2" draggable="true"></div>
+    <div class="box" id="box3" draggable="true"></div>
+  </div>
+  <div class="rect2"></div>
+
+
+
+  <script>
+
+    
+    const boxes = document.querySelectorAll(".box");
+    const handler = (event) => {
+      event.dataTransfer.setData('text',event.currentTarget.id)
+      console.log(event.currentTarget.id)}
+    boxes.forEach((b)=>{
+    b.addEventListener('dragstart', handler);
+    b.addEventListener('dragend', handler);
+    })
+
+    const rects = document.querySelectorAll(".rect");
+    rects.forEach((r)=>{
+    r.addEventListener('dragenter', handler);
+    r.addEventListener('dragleave', handler);
+    r.addEventListener('dragover',(e)=>e.preventDefault());
+    r.addEventListener('drop', handler);
+    })
+    
+
+
+
+ </script>
+</body>
+</html>

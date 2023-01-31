@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  .rect{
+    width: 500px;
+    height: 500px;
+    background-color: blue;
+  }
+</style>
+<body>
+  <div class="rect"></div>
+  <div id="output"></div>
+<script>
+  const rect = document.querySelector(".rect");
+  const changeBY = (e)=>{
+    event.currentTarget.style.backgroundColor="yellow"
+  }
+  const changeBB = (e)=>{
+    event.currentTarget.style.backgroundColor="blue"
+  }
+  const handler = (event) => {
+    const items = event.currentTarget.dataTransfer.items;
+    event.preventDefault();
+
+    getFilesDataTransferItems(items).then(files => {
+      const rawOutput = JSON.stringify(files),
+        output = rawOutput
+          .substring(1, rawOutput.length - 1)
+          .replace(/},/g, "}<br/>")
+          .replace(/\[/g, "[<div class='folder'>")
+          .replace(/\]/g, "]</div>");
+
+      document.querySelector("#output").innerHTML = output;
+    });
+  }
+
+  rect.addEventListener('dragenter', changeBY);
+  rect.addEventListener('dragleave', changeBB);
+  rect.addEventListener('dragover',(e)=>e.preventDefault());
+  rect.addEventListener('drop', handler);
+</script>
+</body>
+
+</html>
