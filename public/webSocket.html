@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <input type ="text" id="myinput"></input>
+  <button id="sendBtn" onclick="sendData()">送出</button>
+  <div id="info"></div>
+  <script>
+    const socket = new WebSocket("ws://localhost:3005");
+      socket.addEventListener("open",(event)=>{
+        console.log("--------------");
+      })
+      socket.addEventListener("message",(event)=>{
+        console.log(event.data);
+        // const info = document.querySelector("#info");
+        //id不需要選取
+        info.innerHTML +=`${event.data}`
+      })
+    function sendData(){
+      //trim()移除空格
+      if(myinput.value.trim()){
+        //如果有socket，而且socket的狀態為open
+          if(socket && socket.readyState===WebSocket.OPEN){
+            //向socket發送input的value
+            socket.send(myinput.value.trim());
+          }
+        }
+    }
+  </script>
+</body>
+</html>

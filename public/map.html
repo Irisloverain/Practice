@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    const d1 = {
+      name: "peter",
+      age: 22,
+    };
+
+    const obj1 = { a: 1 };
+    const obj2 = { b: 1 };
+    const dataObj = {};
+
+    dataObj[obj1] = 123;
+    dataObj[obj2] = 456;
+
+    console.log(dataObj[obj1]);
+
+    const myMap = new Map();
+    myMap.set(obj1, 123);
+    myMap.set(obj2, 456);
+
+    myMap.set(obj1, { c: 12 }); // key 重複
+    myMap.set(obj2, { d: 34 }); // key 重複
+    myMap.set({}, { c: 12 });
+    myMap.set({}, { d: 34 });
+
+    console.log(myMap.size);
+
+    myMap.forEach((v1, v2, v3) => {
+      console.log({ v1, v2, v3 });
+    });
+  </script>
+</body>
+</html>

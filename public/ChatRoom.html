@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <input type ="text" id="user">你的名字</input>
+  <button id="sendNameBtn" onclick="sendName()">送出</button><br>
+
+  <textarea id="chat" cols="50" rows="30" readonly></textarea><br>
+
+  <div id="sendmsg">
+  <input type="text" id="message"></input>
+  <button id="sendMsgBtn" onclick="sendMsgBtn()">送出</button>
+  </div>
+  <script>
+      let socket;
+
+      const whenConnected = event =>{
+        if(socket && socket.readyState===WebSocket.OPEN){
+          socket.send(user.value);
+          sendNameBtn.style.display ='none';
+          sendmsg.style.display ='block';
+          user.setAttribute('readonly', 'readonly');
+        }
+      }
+      const whenMsg = event =>{
+        taInfo.value += `${event.data}\n`;
+      }
+
+      function doLink(){
+        if(! socket){
+          socket = new WebSocket("ws://localhost:3005/aaa/bbb?a=100");
+          socket.addEventListener('open', whenConnected);
+          socket.addEventListener('message', whenMsg);
+        }        
+      }
+
+      function sendMsg() {
+        if (msg.value.trim()) {
+          if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.send(msg.value.trim());
+          }
+        }
+      }
+  </script>
+</body>
+</html>

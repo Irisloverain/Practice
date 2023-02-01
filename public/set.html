@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    const d1 = {
+      name: 'peter',
+      age: 22,
+    };
+
+    const mySet = new Set();
+
+    mySet.add(d1);
+    mySet.add({});
+    mySet.add(a=>a*a);
+
+    mySet.add(d1);
+    mySet.add({});
+    mySet.add(a=>a*a);
+
+    console.log(mySet.size);
+
+    mySet.forEach((v1, v2, v3)=>{
+      console.log({v1, v2, v3});
+    });
+
+
+  </script>
+</body>
+</html>
