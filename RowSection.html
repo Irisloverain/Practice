@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    .section1 {
+      position: relative;
+      width: 100%;
+      white-space: nowrap;
+      /* 顯示鼠標的樣式*/
+      cursor: pointer;
+      overflow: hidden;
+      margin-top: 100px;
+      /* padding-bottom: 20vh;
+    padding-left: 2vw;
+    padding-right: 2vw; */
+    }
+    .section1.active {
+      /* 鼠標可以抓 */
+      cursor: grab;
+    }
+    .box {
+      width: 500px;
+      height: 500px;
+      background-color: antiquewhite;
+      position: relative;
+      display: inline-block;
+      margin-right: 3vw;
+      /* top:25vh; */
+      user-select: none;
+      transform: translateY(0px);
+      transition: 0.2s ease;
+    }
+    .rect {
+      width: 500px;
+      height: 1000px;
+      background-color: pink;
+      position: relative;
+      display: inline-block;
+      margin-right: 3vw;
+      /* top:25vh; */
+      user-select: none;
+      transform: translateY(0px);
+      transition: 0.2s ease;
+    }
+  </style>
+  <body>
+    <div class="section1">
+      <div class="box"></div>
+      <div class="box"></div>
+      <div class="box"></div>
+      <div class="box"></div>
+    </div>
+
+    <div class="section1">
+      <div class="rect"></div>
+      <div class="rect"></div>
+      <div class="rect"></div>
+      <div class="rect"></div>
+    </div>
+    <script>
+      //存取拖曳的變數
+      let isDown = false;
+
+      //滑鼠點擊的位置
+      let startX;
+
+      //存取slider目前左移多少
+      let scrollLeft;
+      const sliders = Array.from(document.querySelectorAll(".section1"));
+      // const sliders = document.querySelectorAll(".section1");
+      console.log(sliders);
+
+      const end = () => {
+        isDown = false;
+        const slider = e.currentTarget;
+        slider.classList.remove("active");
+      };
+
+      //mousedown
+      const start = (e) => {
+        isDown = true;
+        const slider = e.currentTarget;
+        slider.classList.add("active");
+
+        //滑鼠在頁面上點擊的座標
+        startX = e.pageX || e.touches[0].pageX - slider.offsetLeft;
+
+        //目前slider距離左邊多少位置
+        scrollLeft = slider.scrollLeft;
+
+        console.log("startX", startX);
+        console.log("scrollLeft", scrollLeft);
+      };
+
+      //mousemove
+      const move = (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const slider = e.currentTarget;
+        const x = e.pageX || e.touches[0].pageX - slider.offsetLeft;
+        const dist = x - startX;
+        slider.scrollLeft = scrollLeft - dist;
+      };
+
+      (() => {
+        sliders.map((slider) => {
+          slider.addEventListener("mousedown", start);
+          slider.addEventListener("touchstart", start);
+
+          slider.addEventListener("mousemove", move);
+          slider.addEventListener("touchmove", move);
+
+          slider.addEventListener("mouseleave", end);
+          slider.addEventListener("mouseup", end);
+          slider.addEventListener("touchend", end);
+        });
+      })();
+    </script>
+  </body>
+</html>
