@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .Carousel{
+        position: relative;
+        right: 0px;
+        width: 100%;
+        white-space: nowrap;
+        cursor: pointer;
+        overflow: hidden;
+    }
+    .box{
+        position: relative;
+        display: inline-block;
+        width: 500px;
+        height: 500px;
+        margin: 40px;
+        background-color: lightblue;
+    }
+    .active{
+    width: 600px;
+    height: 600px; 
+    background-color: rgb(227, 208, 101);
+    transition: all 1s ease-out;
+        }
+    
+</style>
+<body>
+<div class="Carousel">
+    <div class="box">3</div>
+    <div class="box active">1</div>
+    <div class="box">2</div>
+    <div class="box">3</div>
+    <div class="box">1</div>
+</div>
+<script>
+    const Carousel = document.querySelector(".Carousel");
+    const boxes = Array.from(document.querySelectorAll(".box"));
+
+
+    //存取拖拉狀態的變數
+    let isDrag = false;
+
+    //存取滑鼠點擊的位置，用來計算拖拉的幅度
+    let startX;
+
+    //存取滑鼠方開的位置，用來計算拖拉的幅度
+    let endX;
+    let endY;
+
+    //存取拖曳的時間
+    let startTime, endTime;
+
+   
+    //存取當前有加active的box索引值
+    let n = 1;
+
+    //存取slider目前左移多少
+    let scrollLeft = 0;
+
+
+
+    const end = (e) => {
+      isDrag = false;
+      console.log("dragEnd")
+    //   scrollLeft = 0;
+    //   Carousel.scrollLeft = 0;
+
+      endX = e.pageX || e.touches[0].pageX - Carousel.offsetLeft;
+      endY = e.pageY || e.touches[0].pageY - Carousel.offsetLeft;
+      console.log("endX",endX);
+
+      endTime = new Date().getTime();
+      const duration = endTime - startTime;
+      const distance = Math.sqrt(
+      Math.pow(endX - endY, 2) +
+      Math.pow(endX - endY, 2)
+        );
+
+      const direction = startX - endX;
+      console.log("direction",direction);
+
+  if (duration < 500 && distance > 100 && direction<-50) {
+        console.log("right")
+        boxes[n].classList.remove("active");
+        n = n-1;
+        if (n > 4) {
+            n = 0;
+        } else if (n < 0) {
+            n = 4;
+        }
+        Carousel.scrollLeft = 100;
+        boxes[n].classList.add("active");
+        console.log("right")
+
+}else if(duration < 500 && distance > 300 && direction>100){
+    console.log("left")
+    boxes[n].classList.remove("active");
+    n = n+1;
+    if (n > 4) {
+        n = 0;
+    } else if (n < 0) {
+        n = 4;
+    }
+    boxes[n].classList.add("active");
+}else{
+    console.log("scrollLeft",scrollLeft)
+}
+
+    };
+
+    //mousedown
+    const start = (e) => {
+      isDrag = true;
+      startX = e.pageX || e.touches[0].pageX - Carousel.offsetLeft;
+      startTime = new Date().getTime();
+      scrollLeft = Carousel.scrollLeft;
+
+    };
+
+    //mousemove
+    const move = (e) => {
+      if (!isDrag) return;
+      e.preventDefault();
+      console.log("dragMove");
+
+      const x = e.pageX || e.touches[0].pageX - Carousel.offsetLeft;
+      const dragDist = x - startX;
+      Carousel.scrollLeft = scrollLeft - dragDist;
+
+    };
+
+    (() => {
+        
+        Carousel.addEventListener("mousedown", start);
+        Carousel.addEventListener("touchstart", start);
+
+        Carousel.addEventListener("mousemove", move);
+        Carousel.addEventListener("touchmove", move);
+
+        Carousel.addEventListener("mouseleave", end);
+        Carousel.addEventListener("mouseup", end);
+        Carousel.addEventListener("touchend", end);
+    })();
+  </script>
+</body>
+</html>
