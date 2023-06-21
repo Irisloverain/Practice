@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+</head>
+    <style>
+    .gamesecttion{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        flex-wrap: wrap;
+        margin: 30px;
+        gap: 30px;     
+    }
+    .square{
+        width:50px;
+        height:50px;
+    }
+
+    .r{
+        border-right:1px solid #000;
+        }
+
+    .n{
+        border-width: 0px!important;
+        border-bottom: 0px !important;
+        border-top:0px !important;
+    }
+    tr{
+        border-width: 1px;
+        border-left: 0px;
+        border-right: 0px;
+    }
+    </style>
+<body>
+    <div class="gamesecttion">
+        <div id="setting">
+            <label for ="gridsize">設定列數</label>
+            <input type="number" id="gridsize" min="3" max="10" value="3" onchange="gameSizeHandlr()"></input>
+        </div>
+        <div id="board">
+            <table>
+              <tr class="n">
+                <td class="square r"></td>
+                <td class="square r"></td>
+                <td class="square"></td>
+              </tr>
+              <tr id ="dynamic">
+                <td class="square r"></td>
+                <td class="square r"></td>
+                <td class="square"></td>
+              </tr>
+              <tr class="n">
+                <td class="square r"></td>
+                <td class="square r"></td>
+                <td class="square"></td>
+              </tr>
+            </table>
+          </div>        
+        <div id="output">
+            <div>贏家是﹔<span id ="showWinner"></span></div>
+        </div>
+    </div>   
+</body>
+<script> 
+    //勝利條件設置
+    let allWinPattern = [];      
+    function calcWinPattern(gridsize) {
+        //迴圈生成橫向、縱向的勝利結果
+        let rows = [];
+        let cols = [];
+        for(let i=0; i < gridsize; i++){
+            let row = [];
+            let col = [];
+            for(let k =0; k < gridsize; k++){               
+                let r = i * gridsize + k;
+                let c = i + gridsize * k;               
+                row.push(r)
+                col.push(c)
+            }
+            rows.push(row) 
+            cols.push(col)         
+        }
+        //迴圈生成斜向結果(d means diagonal)
+        let dAll = []
+        let dLeft = [];
+        let dRight = [];
+        for(let i = 0 ; i < gridsize; i ++){
+            let r = i + i* gridsize;
+            let init = gridsize-1 ;
+            let l = init + i*(gridsize-1);
+            dRight.push(r);
+            dLeft.push(l);
+        }
+        dAll.push(dLeft)
+        dAll.push(dRight)
+ 
+        allWinPattern = [...rows,...cols,...dAll]
+    }
+    
+    //遊戲環境設置
+    function gameSizeHandlr () {
+        console.log("change");
+        gridsize = document.getElementById("gridsize").value
+        calcWinPattern(gridsize);
+        
+        for(i = 0; i < gridsize-3 ; i++){
+            let createTr=document.createElement("tr"); 
+            let dynamic = document.getElementById("dynamic");
+            dynamic.appendAFTER(createTr);
+        }
+
+    }
+    
+    function getWinner(record) {
+        const showWinner = document.getElementById("showWinner");
+        //遍歷gamesize次，查詢有沒有勝利結果
+        for(let i = 0; i < allWinPattern.length; i++){
+            const [a,b,c] = allWinPattern[i];
+            //如果record上的索引值指向的位置中，內容不是null，而且都有相同的內容(o或x)，代表o或x勝出了
+            if(record[a]  &&  record[a] === record[b] && record[b] && record[b] === record[c] && record[c]){
+                winner = record[a];
+                showWinner.innerHTML = record[a];
+            }
+        }       
+        return winner;
+    }
+
+
+    
+    //紀綠點擊時產生的是O還是X，預設由O開始
+    let option = "○";
+    
+    //分別紀錄當前盤面的結果(目前決定捨棄此方法)
+    // let record_O = [];
+    // let record_X = [];
+
+    
+    //record長度為girdsize的平方
+    let gridsize = document.getElementById("gridsize");
+    let gamesize = gridsize.value * gridsize.value
+    
+    //紀錄當前盤面O和X的位置，初始值為null
+    let record = Array(gamesize).fill(null)
+    let winner = null;
+    
+    const tds = document.querySelectorAll('td');
+    for (let i = 0; i < tds.length; i++) {
+        //由於click event沒有index，可以自己宣告一個         
+        tds[i].index = i;
+        tds[i].addEventListener("click", function(e) {
+            //判斷點擊的欄位中有沒有字串
+            if(e.target.innerHTML === "" && winner === null){
+                //根據option決定欄位要填入是o或x
+                switch (option){
+                case "○" :
+                    //填入值
+                    e.target.innerHTML = "○"
+                    
+                    //更新option
+                    option = "X";
+
+                    //將點擊到的O更新至record
+                    record[e.target.index] = "○"
+
+                    //比對record和allWinPattern
+                    getWinner(record);
+                    break;
+                case "X" :
+                     //填入值
+                    e.target.innerHTML = "X"
+
+                    //更新option
+                    option = "○";
+
+                    //將點擊到的X更新至record
+                    record[e.target.index] = "X"
+                    console.log(record)
+                    
+                     //比對record和allWinPattern
+                     getWinner(record);
+                   break;
+                   default:
+                    console.log("game-error");
+            }
+            } else{
+                console.log("遊戲已結束");
+
+            }         
+     });
+    }
+
+    
+</script>
+</html>
