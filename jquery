@@ -1,0 +1,249 @@
+div id="SC02-03-010" class="container MobilePadding5" reload="true">
+    <div class="col-xs-12 panelStyleA" id="SC0203010_Panel" style="display:none;">
+        <div class="col-xs-12" style="text-align:center;">
+            <h3 style="margin:15px">
+                <strong class="ubotlan">外幣餘額查詢</strong>
+            </h3>
+        </div>
+        <div class="col-sm-8 col-sm-offset-2 col-xs-12 input-group"style="margin-bottom:1%;">
+            <div class="col-xs-12 margin5px0px">
+                <div class="col-xs-12">
+                    <span class="col-xs-12 col-sm-4  questionStyleA ubotlan">統編/戶名</span>
+                    <select id="SC0203010_Id" class="selectpicker  col-xs-12 col-sm-8" data-size="10" data-live-search="true">
+                    <option value="None" class="ubotlan">無可查詢統編</option>
+                    </select>
+                </div>         
+                <span class="input-group-btn col-xs-12 col-sm-12" style="display:flex; justify-content: center; width:100%; margin-top: 10px;">
+                <button class="btn btn-info SC0203010_cls ubotlan" action="Search">查詢</button>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12">　</div>
+    <!-- 空行 -->
+
+    <div id="SC0203010_Detail" class="col-sm-12 MobilePadding0" style="display:none;">
+        <div class="col-xs-12"
+            style="background-color:#caffff;padding-top: 5px;padding-bottom: 5px;text-align:center;border-color:#00caca; border-style:solid;border-width:1px;">
+            <div class="col-sm-6">
+                <span class="col-sm-12 ubotlan MobilePadding0" style="color:blue;padding-bottom: 5px;">統編/戶名</span>
+                <span class="col-sm-12" style="color:red" id="SC0203010_SpanId"></span>
+            </div>
+            <div class="col-sm-6">
+                <span class="col-sm-12 ubotlan MobilePadding0" style="color:blue;padding-bottom: 5px;">查詢時間</span>
+                <span class="col-sm-12 MobilePadding0" style="color:red" id="SC0203010_SpanSearchTime"></span>
+            </div>
+        </div>
+        <table id="SC0203010_MainTable" class="table table-bordered" style="text-align:center;">
+            <thead>
+                <tr>
+                    <th class='text-center ubotlan' data-field="No" data-sortable="true">序號</th>
+                    <th class='text-center ubotlan' data-field="PayBranchName" data-sortable="true">分行別</th>
+                    <th class='text-center ubotlan' data-field="PayAccountSubject" data-sortable="true">帳戶性質</th>
+                    <th class='text-center ubotlan' data-field="PayAccount" data-sortable="true">帳號</th>
+                    <th class='text-center ubotlan' data-field="PayAccountName" data-sortable="true">戶名</th>
+                    <th class='text-right TableRight ubotlan' data-field="PayAccountBal" data-sortable="true">帳戶餘額</th>
+                    <th class='text-right TableRight ubotlan' data-field="PayAvailableBal" data-sortable="true">可用餘額
+                    </th>
+                    <th class='text-center ubotlan' data-field="PayCurrency" data-sortable="true">幣別</th>
+                </tr>
+            </thead>
+            <tbody id="SC0203010_tbody">
+            </tbody>
+        </table><br>
+        <div class="col-sm-12" style="padding:5px;margin-bottom: 10px;">
+            <button type="button" class="btn btn-info SC0203010_cls ubotlan_btn" action="Download">
+                <i class="fa fa-download"></i>　下載檔案
+            </button>
+            <button type="button" class="btn btn-primary SC0203010_cls ubotlan_btn" action="Print">
+                <i class="fa fa-print"></i>　列印此表
+            </button>
+        </div><br>
+        <div class="col-sm-12">
+            <b class="col-sm-12 ubotlan" style='color:red;'>注意事項</b>
+            <b class="col-sm-12 ubotlan_long" style='color:blue;'>1.本項查詢結果不作為存款餘額證明。</b>
+            <b class="col-sm-12 ubotlan_long" style='color:blue;'>2."-"為無查詢餘額權限。</b>
+        </div>
+    </div>
+
+</div>
+<script>
+
+    var SC0203010_MainTable_DataField = [];
+
+    LanguageReplace("SC02-03-010");
+
+    $(function () {
+        $("#SC0203010_MainTable thead th").each(function () {
+            if ($(this).attr("data-field") != "Operate") {
+                SC0203010_MainTable_DataField[SC0203010_MainTable_DataField.length] = {
+                    "Name": $(this).text(),
+                    "DataField": $(this).attr("data-field")
+                }
+            }
+        });
+
+        $('.selectpicker').selectpicker('refresh');
+
+        $('#SC0203010_MainTable').bootstrapTable({
+            pagination: true, //使否要分頁
+            showColumns: true, //顯示/隱藏哪些欄位
+            pageSize: 50, //一頁顯示幾筆
+            pageList: [10, 20, 50, 100], //一頁顯示幾筆的選項
+            formatRecordsPerPage: function (pageSize) {
+                return '&nbsp;&nbsp;每頁顯示　' + pageSize + '　筆';
+            },
+            formatShowingRows: function (fromIndex, toIndex, totalSize) {
+                var currentPage = Math.ceil(fromIndex / this.pageSize);//目前第幾頁
+                var totalPageCount = Math.ceil(totalSize / this.pageSize);//總共幾頁
+                return '第 ' + currentPage + ' 頁&nbsp;&nbsp;共 ' + totalPageCount + ' 頁';
+            }
+        });
+
+        $('#SC0203010_MainTable').bootstrapTable('hideColumn', 'PayAccountName');
+
+        GetLocalStorageTableSetting("SC0203010_MainTable");
+        $('#SC0203010_MainTable').parent().parent().prev().unbind().on("change", "[type='checkbox'][data-field]", function () {
+            SaveLocalStorageTableSetting("SC0203010_MainTable");
+        })
+
+        SC020301001();//取得帳號清單
+
+        $(document).off('click', 'div#SC02-03-010.container .SC0203010_cls')
+            .on('click', 'div#SC02-03-010.container .SC0203010_cls', function (event) {
+                if ($(this).attr('action') == "Search") {
+                    if ($('#SC0203010_Id').val() != "None") {
+                        $('#SC0203010_tbody').empty();
+                        SC020301002();
+                    } else
+                        InfoModalShow(LRstr('請選擇統編/戶名'));
+                } else if ($(this).attr('action') == "Print") {
+                    var SC0203010_PrintData = {
+                        "Title": LRstr("外幣餘額查詢"),
+                        "Address": "SC0203010_MainTable",
+                        "Type": "TypeB",
+                        "Data": "",
+                        "Data2": [LRstr("統編/戶名"), $('#SC0203010_SpanId').text(),
+                        LRstr("查詢時間"), $('#SC0203010_SpanSearchTime').text()]
+                    };
+                    SC0203010_PrintData.Data = $("#SC0203010_MainTable").bootstrapTable('getData');
+                    PrintProcess(SC0203010_PrintData);
+                } else if ($(this).attr('action') == "Download") {
+                    var SC0203010_DownloadData = {
+                        "Type": "",
+                        "FileName": LRstr("外幣餘額查詢"),
+                        "FormInformation": [{
+                            "InfoName":LRstr( "統編/戶名"),
+                            "InfoData": $('#SC0203010_SpanId').text()
+                        }, {
+                            "InfoName": LRstr("查詢時間"),
+                            "InfoData": $('#SC0203010_SpanSearchTime').text()
+                        }],
+                        "TableTitle": SC0203010_MainTable_DataField,
+                        "TableData": []
+                    };
+                    SC0203010_DownloadData.TableData = JSON.parse(JSON.stringify($("#SC0203010_MainTable").bootstrapTable('getData')));
+                    for (var i = 0; i < SC0203010_DownloadData.TableData.length; i++) {
+                        SC0203010_DownloadData.TableData[i].PayAccountBal = DownloadTextRight + SC0203010_DownloadData.TableData[i].PayAccountBal;
+                        SC0203010_DownloadData.TableData[i].PayAvailableBal = DownloadTextRight + SC0203010_DownloadData.TableData[i].PayAvailableBal;
+                    }
+
+                    DownloadModalShow(SC0203010_DownloadData);
+                }
+            });
+
+    });
+    //初始化
+    function SC020301001() {
+        ResultPage();
+        var SendData = {
+            "cid": CID,
+            "loginUID": LID0,
+            "token": TK
+        };
+        var ReturnControl = true;
+        loading();
+        $.ajax({
+            url: UrlSearch("sc020301001"),
+            type: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            dataType: 'json',
+            data: JSON.stringify(SendData),
+            success: function (data) {
+                loadingEnd();
+                if (data.rc == "T23111") {
+                    ReturnControl = false;
+                    $('#SC0203010_Panel').show();
+
+                    var UserData = data.result.UserData;
+                    var options = [];
+                    options.push('<option value="None">' + LRstr('請選擇統編/戶名') + '</option>');
+
+                    for (var i = 0; i < UserData.length; i++) {
+                        options.push('<option value=' + UserData[i].Id + '>' + UserData[i].Id + '　' + UserData[i].Name + '</option>');
+                    }
+
+                    $('#SC0203010_Id').html(options).selectpicker('refresh');
+                } else {
+                    InfoModalShow(data.msg + "(" + data.rc + ")");
+                }
+            }, error: function (jqXHR, exception) {
+                InfoModalShow(UBOTMessage("E00002"));
+            }, complete: function (xhr) {
+                loadingEnd();
+                if (ReturnControl)
+                    $('#homePanel').click();
+
+            }
+        });
+
+    }
+
+    //查詢帳號餘額
+    function SC020301002(account) {
+
+        var SendData = {
+            "cid": CID,
+            "loginUID": LID0,
+            "token": TK,
+            "PayId": $('#SC0203010_Id').val()
+        };
+
+        loading();
+        $.ajax({
+            url: UrlSearch("sc020301002"),
+            type: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            dataType: 'json',
+            data: JSON.stringify(SendData),
+            success: function (data) {
+                loadingEnd();
+                if (data.rc == "T23121") {
+                    var SearchData = data.result;
+                    for (var i = 0; i < SearchData.length; i++) {
+                        SearchData[i].No = (i + 1);
+                        SearchData[i].PayAccountBal = ForeignAmountProcessing(SearchData[i].PayAccountBal);
+                        SearchData[i].PayAvailableBal = ForeignAmountProcessing(SearchData[i].PayAvailableBal);
+                    }
+
+                    $('#SC0203010_MainTable').bootstrapTable('load', SearchData);
+                    $('#SC0203010_MainTable thead .TableRight').removeClass("text-right").addClass("text-center");
+                    $("#SC0203010_Detail").show();
+
+                    $('#SC0203010_SpanId').text($('#SC0203010_Id').val());
+                    $('#SC0203010_SpanSearchTime').text(new Date().Format("yyyy/MM/dd hh:mm:ss"));
+                } else {
+
+                    InfoModalShow(data.msg + "(" + data.rc + ")");
+                }
+            }, error: function (jqXHR, exception) {
+
+                InfoModalShow(UBOTMessage("E00002"));
+            }, complete: function (xhr) {
+                loadingEnd();
+            }
+        });
+    }
+
+</script>
