@@ -11,7 +11,8 @@
             <div class="col-sm-8 col-sm-offset-2 col-xs-12 input-group">
                 <div class="col-xs-12 margin5px0px">
                     <span class="col-sm-4 col-xs-12 questionStyleA ubotlan">select</span>
-                    <select class="col-sm-8 col-xs-12"v-model="selectValue">
+                    <select class="col-sm-8 col-xs-12 selectpicker" data-size="6" data-live-search="true" v-model="selectValue">
+                        <option disabled value="">請選擇</option>
                         <option class="ubotlan" v-for="selectObject in selectList"
                             :value="selectObject.Content" :key="selectObject.Code">
                             {{ selectValue }}</option>
@@ -139,8 +140,8 @@
                             loadingEnd();
                             if (data.rc == "T21111") {
                                 self.returnControl = false;
-                                self.list = [] 
-                            
+                                console.log("data",data.rc)
+
                                 //vue的資料更新那麼及時，給個settime等一下
                                 setTimeout(function () {
                                     $('.selectpicker').selectpicker('refresh');
@@ -159,9 +160,7 @@
                     });
 
                 },
-                exampleBtnClick: function () {
-                    console.log("data",data)
-                    console.log("selectList",selectList)
+                exampleBtnClick: function () {           
                     var self = this;
                     self.detailControl = true;
 
@@ -188,7 +187,10 @@
                 }
             },
             mounted() {
-              
+                var self = this;
+
+                console.log("selectList",this.selectList)
+
                 //將有用此套件的select初始化
                 $('.selectpicker').selectpicker('refresh');
 
