@@ -1,4 +1,5 @@
-<div id="Vue_example" class="containerR">
+
+<div id="Vue_example" class="containerR" reload="true">
     <!-- <div class="container"> -->
     <div id="EXAMPLE" class="container MobilePadding5">
         <div class="col-xs-12 panelStyleA" id="example_Panel" v-show="!returnControl">
@@ -13,13 +14,13 @@
                     <select class="col-sm-8 col-xs-12 selectpicker" v-model="selectValue">
                         <option class="ubotlan" value="">請選擇統編/戶名</option>
                         <option class="ubotlan" v-for="selectObject in selectList"
-                            :value="{Id: selectObject.Id , Name: selectObject.Name}">
+                            :value="{Id: selectObject.Id , Name: selectObject.Name}" :key="selectObject.Id">
                             {{ selectObject.Name }}</option>
                     </select>
                 </div>
             </div>
             <div class="col-xs-12" style="padding:5px;text-align:center;">
-                <button type="button" class="btn btn-primary ubotlan_btn" @click="exampleBtnClick()">
+                <button type="button" class="btn btn-primary ubotlan_btn" @click="searcBtnClick()">
                     <i class="fa fa-search"></i>　查詢
                 </button>
             </div>
@@ -27,7 +28,7 @@
                 <span style="color:red;font-size: 16px;" class="ubotlan">notice</span>
             </div>
         </div>
-  
+
         <div class="col-xs-12 MobilePadding0" v-show="detailControl">
             <div class="col-xs-12 formStyleA">
                 <div class="col-sm-6 col-xs-12 noPaddingLR">
@@ -40,7 +41,7 @@
                 </div>
             </div>
             <div>
-                <table id="example_MainTable" class="table table-bordered" style="margin-bottom:20px;">
+                <table id="SC0203010_MainTable" class="table table-bordered" style="margin-bottom:20px;">
                     <thead>
                         <tr>
                             <th class='text-center ubotlan' data-field="No" data-sortable="true">序號</th>
@@ -49,13 +50,13 @@
                             <th class='text-center ubotlan' data-field="Operate">功能</th>
                         </tr>
                     </thead>
-                    <tbody id="example_MainTable_tbody"></tbody>
+                    <tbody id="SC0203010_MainTable_tbody"></tbody>
                 </table>
             </div>
         </div>
     </div>
-  
-  
+
+
     <div class="modal fade" id="example_ViewModal" tabindex="-1" role="dialog" style="z-index:1051;">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -85,43 +86,43 @@
             </div>
         </div>
     </div>
-  
-  
+
+
     <script>
-  
+
         var example = new Vue({
             el: "#Vue_example",
             data: {
                 //頁面控制
                 returnControl: true,
                 detailControl: false,
-  
+
                 selectValue: "",
                 selectList: [],
-  
+
                 Info1: "1",
                 Info2: "2",
-                example_ViewModal: {
-                    input1: "A",
-                    input2: "B"
-                }
-  
+
             },
-            created: async function() {
+            // beforeMount: function() {
+            //     $("#Vue_example").empty();
+            // },
+            created: async function () {
                 await this.example_Init();//取得帳號清單
             },
             methods: {
                 example_Init: function () {
+                    ResultPage();
                     var self = this;
                     self.returnControl = true;
                     self.detailControl = false;
-  
+
                     var SendData = {
                         "cid": CID,
                         "loginUID": LID0,
                         "token": TK
                     };
-  
+
                     loading();
                     $.ajax({
                         url: UrlSearch("sc020301001"),
@@ -135,19 +136,19 @@
                                 self.returnControl = false;
 
                                 var UserData = data.result.UserData;
-                                console.log("UserData",UserData)
-                                
+                                console.log("UserData", UserData)
+
                                 //放入下拉式選單選項
                                 for (var i = 0; i < UserData.length; i++) {
-                                self.selectList.push({ Id: UserData[i].Id, Name: UserData[i].Name })
+                                    self.selectList.push({ Id: UserData[i].Id, Name: UserData[i].Name })
                                 }
-                                console.log("selectList",self.selectList)
+                                console.log("selectList", self.selectList)
 
                                 //vue的資料更新那麼及時，給個settime等一下
                                 setTimeout(function () {
                                     $('.selectpicker').selectpicker('refresh');
                                 }, 200);
-  
+
                             } else {
                                 RcAndMsg(data.rc, data.msg);
                             }
@@ -159,39 +160,75 @@
                                 $('#homePanel').click();
                         }
                     });
-  
+
                 },
-                exampleBtnClick: function () {
+                //查詢帳號餘額
+                SC020301002: function (account) {
+                    var self = this;
+                    var SendData = {
+                        "cid": CID,
+                        "loginUID": LID0,
+                        "token": TK,
+                        "PayId": $('#SC0203010_Id').val()
+                    };
+
+                    loading();
+                    $.ajax({
+                        url: UrlSearch("sc020301002"),
+                        type: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        dataType: 'json',
+                        data: JSON.stringify(SendData),
+                        success: function (data) {
+                            loadingEnd();
+                            if (data.rc == "T23121") {
+                                var SearchData = data.result;
+                                for (var i = 0; i < SearchData.length; i++) {
+                                    SearchData[i].No = (i + 1);
+                                    SearchData[i].PayAccountBal = ForeignAmountProcessing(SearchData[i].PayAccountBal);
+                                    SearchData[i].PayAvailableBal = ForeignAmountProcessing(SearchData[i].PayAvailableBal);
+                                }
+
+                                $('#SC0203010_MainTable').bootstrapTable('load', SearchData);
+                                $('#SC0203010_MainTable thead .TableRight').removeClass("text-right").addClass("text-center");
+                                // $("#SC0203010_Detail").show();
+                                self.detailControl = true;
+
+
+                                $('#SC0203010_SpanId').text($('#SC0203010_Id').val());
+                                $('#SC0203010_SpanSearchTime').text(new Date().Format("yyyy/MM/dd hh:mm:ss"));
+                            } else {
+
+                                InfoModalShow(data.msg + "(" + data.rc + ")");
+                            }
+                        }, error: function (jqXHR, exception) {
+
+                            InfoModalShow(UBOTMessage("E00002"));
+                        }, complete: function (xhr) {
+                            loadingEnd();
+                        }
+                    });
+                },
+                searcBtnClick: function () {
                     var self = this;
                     self.detailControl = true;
-  
-                    var tableList = [
-                        {
-                            No : "1" ,
-                            th01 : "11" ,
-                            th02 : "12" ,
-                            Operate : '<button type="button" class="btn btn-success" onclick="example.exampleBtnClick2()">OpenModal</button> ' 
-                        },
-                        {
-                            No : "2" ,
-                            th01 : "21" ,
-                            th02 : "22" ,
-                            Operate : '<button type="button" class="btn btn-success" onclick="example.exampleBtnClick2()">OpenModal</button> ' 
-                        }
-                    ]
-  
-                    $('#example_MainTable').bootstrapTable('load', tableList);
-  
+
+                    if ($('#SC0203010_Id').val() != "None") {
+                        $('#SC0203010_tbody').empty();
+                        SC020301002();
+                    } else
+                        InfoModalShow(LRstr('請選擇統編/戶名'));
+
+
                 },
-                exampleBtnClick2: function () {
-                    $('#example_ViewModal').modal("show");
-                }
             },
             mounted() {
+                LanguageReplace("SC02-03-010")
+
                 //將有用此套件的select初始化
                 $('.selectpicker').selectpicker('refresh');
-  
-                $('#example_MainTable').bootstrapTable({
+
+                $('#SC0203010_MainTable').bootstrapTable({
                     pagination: true, //使否要分頁
                     showColumns: true, //顯示/隱藏哪些欄位
                     search: true,//查詢
@@ -206,10 +243,10 @@
                         return '第 ' + currentPage + ' 頁&nbsp;&nbsp;共 ' + totalPageCount + ' 頁';
                     }
                 });
-  
-            }
+            },
         });
-  
+
+
     </script>
-  
-  </div>
+
+</div>
