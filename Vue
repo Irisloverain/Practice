@@ -1,103 +1,98 @@
-<div id="Vue_example" class="containerR">
-    <!-- <div class="container"> -->
-    <div id="EXAMPLE" class="container MobilePadding5">
-        <div class="col-xs-12 panelStyleA" id="example_Panel" v-show="!returnControl">
+<div id="SC02-03-010" class="containerR">
+    <div id="EXAMPLE_SC02-03-010" class="container MobilePadding5" reload="true">
+        <div class="col-xs-12 panelStyleA" id="SC0203010_Panel" v-show="returnControl">
             <div class="col-xs-12" style="text-align:center;">
                 <h3 style="margin:15px">
-                    <strong class="ubotlan">Title</strong>
+                    <strong class="ubotlan">外幣餘額查詢</strong>
                 </h3>
             </div>
-            <div class="col-sm-8 col-sm-offset-2 col-xs-12 input-group">
+            <div class="col-sm-8 col-sm-offset-2 col-xs-12 input-group" style="margin-bottom:1%;">
                 <div class="col-xs-12 margin5px0px">
-                    <span class="col-sm-4 col-xs-12">select</span>
-                    <select class="col-sm-8 col-xs-12" v-model="selectValue">
-                        <option disabled value="">請選擇</option>
-                        <option  v-for="selectObject in selectList"
-                            :value="selectObject.Content" :key="selectObject.Code">
-                            {{ selectValue }}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-xs-12" style="padding:5px;text-align:center;">
-                <button type="button" class="btn btn-primary ubotlan_btn" @click="exampleBtnClick()">
-                    <i class="fa fa-search"></i>　Btn
-                </button>
-            </div>
-            <div class="col-xs-12" style="text-align:center;">
-                <span style="color:red;font-size: 16px;" class="ubotlan">notice</span>
-            </div>
-        </div>
-
-        <div class="col-xs-12 MobilePadding0" v-show="detailControl">
-            <div class="col-xs-12 formStyleA">
-                <div class="col-sm-6 col-xs-12 noPaddingLR">
-                    <span class="col-sm-12 col-xs-4 ubotlan" style="color:blue;padding-bottom: 5px;">InfoA</span>
-                    <span class="col-sm-12 col-xs-8" style="color:red">{{Info1}}</span>
-                </div>
-                <div class="col-sm-6 col-xs-12 noPaddingLR">
-                    <span class="col-sm-12 col-xs-4 ubotlan" style="color:blue;padding-bottom: 5px;">InfoB</span>
-                    <span class="col-sm-12 col-xs-8" style="color:red">{{Info2}}</span>
-                </div>
-            </div>
-            <div>
-                <table id="example_MainTable" class="table table-bordered" style="margin-bottom:20px;">
-                    <thead>
-                        <tr>
-                            <th class='text-center ubotlan' data-field="No" data-sortable="true">序號</th>
-                            <th class='text-center ubotlan' data-field="th01" data-sortable="true">Name1</th>
-                            <th class='text-center ubotlan' data-field="th02" data-sortable="true">Name2</th>
-                            <th class='text-center ubotlan' data-field="Operate">功能</th>
-                        </tr>
-                    </thead>
-                    <tbody id="example_MainTable_tbody"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="modal fade" id="example_ViewModal" tabindex="-1" role="dialog" style="z-index:1051;">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header modal-header-success" style="text-align:center;">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title ubotlan">Modal Totle</h4>
-                </div>
-                <div class="modal-body row modalBodyStyleA">
-                    <div id="example_ViewModal_Content">
-                        <div class="col-xs-12">
-                            <div class="col-sm-6 col-xs-12">
-                                <label class="col-sm-5 col-xs-6 ubotlan">label01：</label>
-                                <input class="col-sm-7 col-xs-6" :value="example_ViewModal.input1" disabled>
-                            </div>
-                            <div class="col-sm-6 col-xs-12">
-                                <label class="col-sm-5 col-xs-6 ubotlan">label02：</label>
-                                <input class="col-sm-7 col-xs-6" :value="example_ViewModal.input2" disabled>
-                            </div>
-                        </div>
+                    <div class="col-xs-12">
+                        <span class="col-xs-12 col-sm-4  questionStyleA ubotlan">統編/戶名</span>
+                        <select class="col-xs-12 col-sm-8 selectpicker"
+                            v-model="selectValue">
+                            <option class="ubotlan" value="">請選擇統編/戶名</option>
+                            <option class="ubotlan" v-for="selectObject in selectList"
+                                :value="{Code: selectObject.Code , Content: selectObject.Content}">{{ selectObject.Content }}
+                            </option>
+                        </select>
                     </div>
-                </div>
-                <div class="modal-footer modal-header-success" style="text-align:center;">
-                    <button type="button" class="btn btn-danger ubotlan_btn" data-dismiss="modal">
-                        <i class="fa fa-remove"></i>　關閉視窗
-                    </button>
+                    <span class="input-group-btn col-xs-12 col-sm-12"
+                        style="display:flex; justify-content: center; width:100%; margin-top: 10px;">
+                        <button class="btn btn-info SC0203010_cls ubotlan" action="Search"
+                            @click="searchBtnClick()">查詢</button>
+                    </span>
                 </div>
             </div>
         </div>
+
+        <div class="col-sm-12">　</div>
+        <!-- 空行 -->
+
+        <div id="SC0203010_Detail" class="col-sm-12 MobilePadding0" v-show="detailControl">
+            <div class="col-xs-12"
+                style="background-color:#caffff;padding-top: 5px;padding-bottom: 5px;text-align:center;border-color:#00caca; border-style:solid;border-width:1px;">
+                <div class="col-sm-6">
+                    <span class="col-sm-12 ubotlan MobilePadding0" style="color:blue;padding-bottom: 5px;">統編/戶名</span>
+                    <span class="col-sm-12" style="color:red" id="SC0203010_SpanId">{{taxIDName}}</span>
+                </div>
+                <div class="col-sm-6">
+                    <span class="col-sm-12 ubotlan MobilePadding0" style="color:blue;padding-bottom: 5px;">查詢時間</span>
+                    <span class="col-sm-12 MobilePadding0" style="color:red" id="SC0203010_SpanSearchTime">{{searchDate}}</span>
+                </div>
+            </div>
+            <table id="SC0203010_MainTable" class="table table-bordered" style="text-align:center;">
+                <thead>
+                    <tr>
+                        <th class='text-center ubotlan' data-field="No" data-sortable="true">序號</th>
+                        <th class='text-center ubotlan' data-field="PayBranchName" data-sortable="true">分行別</th>
+                        <th class='text-center ubotlan' data-field="PayAccountSubject" data-sortable="true">帳戶性質</th>
+                        <th class='text-center ubotlan' data-field="PayAccount" data-sortable="true">帳號</th>
+                        <th class='text-center ubotlan' data-field="PayAccountName" data-sortable="true">戶名</th>
+                        <th class='text-right TableRight ubotlan' data-field="PayAccountBal" data-sortable="true">帳戶餘額
+                        </th>
+                        <th class='text-right TableRight ubotlan' data-field="PayAvailableBal" data-sortable="true">可用餘額
+                        </th>
+                        <th class='text-center ubotlan' data-field="PayCurrency" data-sortable="true">幣別</th>
+                    </tr>
+                </thead>
+                <tbody id="SC0203010_tbody">
+                </tbody>
+            </table><br>
+            <div class="col-sm-12" style="padding:5px;margin-bottom: 10px;">
+                <button type="button" class="btn btn-info SC0203010_cls ubotlan_btn" action="Download">
+                    <i class="fa fa-download"></i>　下載檔案
+                </button>
+                <button type="button" class="btn btn-primary SC0203010_cls ubotlan_btn" action="Print">
+                    <i class="fa fa-print"></i>　列印此表
+                </button>
+            </div><br>
+            <div class="col-sm-12">
+                <b class="col-sm-12 ubotlan" style='color:red;'>注意事項</b>
+                <b class="col-sm-12 ubotlan_long" style='color:blue;'>1.本項查詢結果不作為存款餘額證明。</b>
+                <b class="col-sm-12 ubotlan_long" style='color:blue;'>2."-"為無查詢餘額權限。</b>
+            </div>
+        </div>
+
     </div>
+</div>
+<script>
+
+    var SC0203010_MainTable_DataField = [];
 
 
-    <script>
+    //vue化
+    var SC02_03_010 = new Vue({
+        el: "#SC02-03-010",
+        data: {
+            //頁面控制
+            returnControl: true,
+            detailControl: false,
 
-        var example = new Vue({
-            el: "#Vue_example",
-            data: {
-                //頁面控制
-                returnControl: true,
-                detailControl: false,
-
-                selectValue: "",
-                selectList: [
+            //下拉式選單資料
+            selectValue: "請選擇統編/戶名",
+            selectList: [
                     {
                         Code: "Code01",
                         Content: "Content01"
@@ -106,90 +101,134 @@
                         Code: "Code02",
                         Content: "Content02"
                     }
-                ],
+            ],
+            
+            //藍色預覽帳戶和查詢時間資訊
+            taxIDName: "",
+            searchDate: "",
 
-                Info1: "1",
-                Info2: "2",
-                example_ViewModal: {
-                    input1: "A",
-                    input2: "B"
-                }
-
+        },
+        methods: {
+            beforeMount: function(){
+                $('.selectpicker').selectpicker('refresh');
             },
-            methods: {
-                example_Init: function () {
-                    var self = this;
-                    self.returnControl = true;
-                    self.detailControl = false;
+            //初始化
+            example_Init: function () {
+                var self = this;
+                self.returnControl = false;
+                self.detailControl = false;
 
-                    var SendData = {
-                        "cid": CID,
-                        "loginUID": LID0,
-                        "token": TK
-                    };
+                var SendData = {
+                    "cid": CID,
+                    "loginUID": LID0,
+                    "token": TK
+                };
 
-                    loading();
-                    $.ajax({
-                        url: UrlSearch("sc020101001"),
-                        type: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        dataType: 'json',
-                        data: JSON.stringify(SendData),
-                        success: function (data) {
-                            loadingEnd();
-                            if (data.rc == "T21111") {
-                                self.returnControl = false;
-                                console.log("data",data.rc)
+                loading();
+                $.ajax({
+                    url: UrlSearch("sc020301001"),
+                    type: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    dataType: 'json',
+                    data: JSON.stringify(SendData),
+                    success: function (data) {
+                        loadingEnd();
+                        if (data.rc == "T23111") {
 
-                                //vue的資料更新那麼及時，給個settime等一下
-                                setTimeout(function () {
-                                    $('.selectpicker').selectpicker('refresh');
-                                }, 200);
+                            self.returnControl = true;
+                            // $('#SC0203010_Panel').show();
 
-                            } else {
-                                RcAndMsg(data.rc, data.msg);
+                            var UserData = data.result.UserData;
+                            console.log("UserData",UserData)
+
+                            //這個不確定是不是放這
+                            var options = [];
+                            options.push('<option value="None">' + LRstr('請選擇統編/戶名') + '</option>');
+
+                            //放入下拉式選單選項
+                            for (var i = 0; i < UserData.length; i++) {
+                                self.selectList.push({ id: UserData[i].Id, name: UserData[i].Name })
+                                // options.push('<option value=' + UserData[i].Id + '>' + UserData[i].Id + '　' + UserData[i].Name + '</option>');
                             }
-                        }, error: function (jqXHR, exception) {
-                            AjaxErrorHandle(jqXHR, exception, "sc020101001");
-                        }, complete: function (xhr) {
-                            loadingEnd();
-                            if (this.returnControl)
-                                $('#homePanel').click();
+
+                            //vue的資料更新那麼及時，給個settime等一下
+                            setTimeout(function () {
+                                $('.selectpicker').selectpicker('refresh');
+                            }, 200);
+
+                        } else {
+                            RcAndMsg(data.rc, data.msg);
                         }
-                    });
-
-                },
-                exampleBtnClick: function () {           
-                    var self = this;
-                    self.detailControl = true;
-
-                    var tableList = [
-                        {
-                            No : "1" ,
-                            th01 : "11" ,
-                            th02 : "12" ,
-                            Operate : '<button type="button" class="btn btn-success" onclick="example.exampleBtnClick2()">OpenModal</button> ' 
-                        },
-                        {
-                            No : "2" ,
-                            th01 : "21" ,
-                            th02 : "22" ,
-                            Operate : '<button type="button" class="btn btn-success" onclick="example.exampleBtnClick2()">OpenModal</button> ' 
+                    }, error: function (jqXHR, exception) {
+                        AjaxErrorHandle(jqXHR, exception, "sc020301001");
+                    }, complete: function (xhr) {
+                        loadingEnd();
+                        if (this.returnControl)
+                            $('#homePanel').click();
+                    }
+                });
+            },
+            SC020301002: function (account) {
+                var SendData = {
+                    "cid": CID,
+                    "loginUID": LID0,
+                    "token": TK,
+                    "PayId": $('#SC0203010_Id').val()
+                };
+                loading();
+                $.ajax({
+                    url: UrlSearch("sc020301002"),
+                    type: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    dataType: 'json',
+                    data: JSON.stringify(SendData),
+                    success: function (data) {
+                        var self = this;
+                        loadingEnd();
+                        //這啥?
+                        if (data.rc == "T23121") {
+                            var SearchData = data.result;
+                            for (var i = 0; i < SearchData.length; i++) {
+                                SearchData[i].No = (i + 1);
+                                SearchData[i].PayAccountBal = ForeignAmountProcessing(SearchData[i].PayAccountBal);
+                                SearchData[i].PayAvailableBal = ForeignAmountProcessing(SearchData[i].PayAvailableBal);
+                            }
+                            //這啥? 應該是更新table
+                            $('#SC0203010_MainTable').bootstrapTable('load', SearchData);
+                            $('#SC0203010_MainTable thead .TableRight').removeClass("text-right").addClass("text-center");
+                            
+                            //查詢後的藍色區塊顯示               
+                            self.detailControl = true;  
+                            //套入藍色區塊的資訊(統編和查詢時間)
+                            taxIDName = $('#SC0203010_Id').val()
+                            searchDate = new Date().Format("yyyy/MM/dd hh:mm:ss")
+                        } else {
+                            //這啥?
+                            InfoModalShow(data.msg + "(" + data.rc + ")");
                         }
-                    ]
+                    }, error: function (jqXHR, exception) {
 
-                    $('#example_MainTable').bootstrapTable('load', tableList);
+                        InfoModalShow(UBOTMessage("E00002"));
+                    }, complete: function (xhr) {
+                        loadingEnd();
+                    }
+                });
+            },
+             //按下查詢按鈕
+             searchBtnClick: function () {
+                var self = this;
+                console.log("selectList",self.selectList)
 
-                },
-                exampleBtnClick2: function () {
-                    $('#example_ViewModal').modal("show");
-                }
+                //如果查詢欄位值不為空，更新查詢
+                if ($('#SC0203010_Id').val() != "None") {
+                    $('#SC0203010_tbody').empty();
+                    //重新執行查詢帳號餘額
+                    SC020301002();
+                } else//如果查詢欄位值為空 ????
+                    InfoModalShow(LRstr('請選擇統編/戶名'));
+
             },
             mounted() {
-                var self = this;
-
-                console.log("selectList",this.selectList)
-
                 //將有用此套件的select初始化
                 $('.selectpicker').selectpicker('refresh');
 
@@ -210,11 +249,7 @@
                 });
 
                 this.example_Init();
-                
 
             }
-        });
-
-    </script>
-
-</div>
+        }
+    })
